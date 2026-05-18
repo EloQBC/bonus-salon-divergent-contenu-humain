@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Utilise l'IA sans te faire bouffer — Nation Divergente</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #D4AF37;
+    --gold-light: #F0D060;
+    --gold-dark: #A07820;
+    --orange: #E8651A;
+    --red: #C0392B;
+    --black: #080808;
+    --dark: #111111;
+    --dark2: #1a1a1a;
+    --dark3: #222222;
+    --white: #F0EDE0;
+    --grey: #888880;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(ellipse at 20% 0%, rgba(212,175,55,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(232,101,26,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+    position: relative;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--orange);
+    border: 1px solid rgba(232,101,26,0.4);
+    padding: 6px 16px;
+    margin-bottom: 24px;
+    background: rgba(232,101,26,0.05);
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 4vw, 38px);
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1.15;
+    letter-spacing: 1px;
+    text-shadow: 0 0 40px rgba(212,175,55,0.3);
+    margin-bottom: 16px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--grey);
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+
+  /* RUNE DIVIDER */
+  .rune-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 20px auto 0;
+    width: fit-content;
+  }
+  .rune-divider span {
+    color: var(--gold-dark);
+    font-size: 18px;
+  }
+  .rune-line {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dark));
+  }
+  .rune-line.right {
+    background: linear-gradient(90deg, var(--gold-dark), transparent);
+  }
+
+  /* INTRO */
+  .intro-box {
+    background: linear-gradient(135deg, rgba(212,175,55,0.06), rgba(232,101,26,0.04));
+    border: 1px solid rgba(212,175,55,0.15);
+    border-left: 3px solid var(--gold);
+    padding: 24px 28px;
+    margin-bottom: 50px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(240,237,224,0.85);
+  }
+  .intro-box strong {
+    color: var(--gold-light);
+  }
+
+  /* RULES NAV */
+  .rules-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .rule-btn {
+    background: transparent;
+    border: 1px solid rgba(212,175,55,0.25);
+    color: var(--grey);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .rule-btn:hover {
+    border-color: rgba(212,175,55,0.5);
+    color: var(--gold);
+  }
+
+  .rule-btn.active {
+    background: rgba(212,175,55,0.1);
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .rule-btn .num {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: var(--gold-dark);
+    color: var(--black);
+    font-size: 10px;
+    line-height: 18px;
+    text-align: center;
+    margin-right: 8px;
+    font-weight: 900;
+  }
+
+  .rule-btn.active .num {
+    background: var(--gold);
+  }
+
+  /* RULE CARD */
+  .rule-card {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .rule-card.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .rule-header {
+    margin-bottom: 32px;
+  }
+
+  .rule-number {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .rule-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+
+  .rule-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(240,237,224,0.75);
+    max-width: 680px;
+  }
+
+  /* BEFORE/AFTER TOGGLE */
+  .toggle-wrapper {
+    margin-bottom: 28px;
+  }
+
+  .toggle-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 12px;
+  }
+
+  .toggle-bar {
+    display: inline-flex;
+    border: 1px solid rgba(212,175,55,0.2);
+    overflow: hidden;
+  }
+
+  .toggle-opt {
+    padding: 10px 28px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    color: var(--grey);
+  }
+
+  .toggle-opt.ia.active {
+    background: rgba(192,57,43,0.2);
+    color: #E74C3C;
+    border-right: 1px solid rgba(212,175,55,0.1);
+  }
+
+  .toggle-opt.humain.active {
+    background: rgba(212,175,55,0.12);
+    color: var(--gold);
+  }
+
+  .toggle-opt:hover:not(.active) {
+    background: rgba(255,255,255,0.04);
+    color: var(--white);
+  }
+
+  /* CONTENT BOX */
+  .content-box {
+    border: 1px solid rgba(212,175,55,0.1);
+    background: var(--dark2);
+    padding: 28px 32px;
+    position: relative;
+    margin-bottom: 24px;
+    min-height: 160px;
+    transition: border-color 0.3s;
+  }
+
+  .content-box.ia-mode {
+    border-left: 3px solid #C0392B;
+    border-color: rgba(192,57,43,0.3);
+  }
+
+  .content-box.humain-mode {
+    border-left: 3px solid var(--gold);
+    border-color: rgba(212,175,55,0.25);
+  }
+
+  .mode-badge {
+    position: absolute;
+    top: -1px;
+    right: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+  }
+
+  .mode-badge.ia {
+    background: rgba(192,57,43,0.15);
+    color: #E74C3C;
+    border: 1px solid rgba(192,57,43,0.3);
+    border-top: none;
+  }
+
+  .mode-badge.humain {
+    background: rgba(212,175,55,0.1);
+    color: var(--gold);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-top: none;
+  }
+
+  .content-ia, .content-humain {
+    display: none;
+  }
+  .content-ia.visible, .content-humain.visible {
+    display: block;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .content-text {
+    font-size: 15px;
+    line-height: 1.75;
+    color: rgba(240,237,224,0.85);
+    font-style: italic;
+  }
+
+  .content-text em {
+    font-style: normal;
+    background: rgba(212,175,55,0.12);
+    color: var(--gold-light);
+    padding: 1px 4px;
+  }
+
+  .content-text.bad em {
+    background: rgba(192,57,43,0.12);
+    color: #E07070;
+  }
+
+  /* ANALYSIS */
+  .analysis {
+    display: none;
+    margin-top: 0;
+    padding: 20px 24px;
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--grey);
+  }
+
+  .analysis.visible {
+    display: block;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .analysis strong {
+    color: var(--white);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .analysis.bad strong { color: #E07070; }
+  .analysis.good strong { color: var(--gold-light); }
+
+  .analysis ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .analysis ul li {
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .analysis ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--gold-dark);
+    font-size: 11px;
+  }
+
+  .analysis.bad ul li::before { color: #C0392B; }
+
+  /* PRINCIPE */
+  .principe-box {
+    background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(232,101,26,0.05));
+    border: 1px solid rgba(212,175,55,0.2);
+    padding: 20px 24px;
+    margin-top: 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .principe-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .principe-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: rgba(240,237,224,0.8);
+  }
+
+  .principe-text strong {
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* NAVIGATION */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(212,175,55,0.1);
+  }
+
+  .nav-btn {
+    background: transparent;
+    border: 1px solid rgba(212,175,55,0.3);
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover {
+    background: rgba(212,175,55,0.1);
+    border-color: var(--gold);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.2;
+    cursor: default;
+  }
+
+  .nav-btn:disabled:hover {
+    background: transparent;
+  }
+
+  .progress {
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--grey);
+  }
+
+  .progress span {
+    color: var(--gold);
+  }
+
+  /* FINAL SCREEN */
+  .final-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .final-screen.active {
+    display: block;
+  }
+
+  .final-icon {
+    font-size: 60px;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 0 20px rgba(212,175,55,0.5));
+  }
+
+  .final-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(20px, 3vw, 30px);
+    color: var(--gold);
+    margin-bottom: 16px;
+    text-shadow: 0 0 30px rgba(212,175,55,0.3);
+  }
+
+  .final-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(240,237,224,0.75);
+    max-width: 560px;
+    margin: 0 auto 40px;
+  }
+
+  .final-rules {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 500px;
+    margin: 0 auto 40px;
+    text-align: left;
+  }
+
+  .final-rule {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    background: rgba(212,175,55,0.06);
+    border: 1px solid rgba(212,175,55,0.15);
+    font-size: 14px;
+    color: rgba(240,237,224,0.8);
+  }
+
+  .final-rule-num {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    color: var(--gold);
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 28px;
+  }
+
+  .restart-btn {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .restart-btn:hover {
+    background: rgba(212,175,55,0.1);
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(212,175,55,0.1);
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(136,136,128,0.5);
+    text-transform: uppercase;
+  }
+
+  .footer span { color: var(--gold-dark); }
+
+  @media (max-width: 600px) {
+    .container { padding: 24px 16px 60px; }
+    .rules-nav { gap: 6px; }
+    .rule-btn { font-size: 10px; padding: 7px 10px; }
+    .content-box { padding: 20px; }
+    .nav-btn { padding: 10px 16px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="tag">⚔ Bonus Salon Divergent</div>
+    <h1>Utilise l'IA sans te<br>faire bouffer par elle</h1>
+    <p class="subtitle">4 règles concrètes — avec exemples avant / après</p>
+    <div class="rune-divider">
+      <div class="rune-line"></div>
+      <span>ᚱ</span>
+      <div class="rune-line right"></div>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="intro-box">
+    L'IA est un outil. <strong>Pas un remplaçant.</strong> Le problème, c'est pas de l'utiliser — c'est de laisser l'IA parler à ta place. Résultat : un contenu qui ressemble à tous les autres, sans voix, sans intention, sans âme. Google le détecte. Tes prospects le sentent. Et toi tu te demandes pourquoi ça convertit pas.<br><br>
+    Ces 4 règles te montrent exactement <strong>où la ligne se situe</strong> — avec des exemples concrets sur tes pages de capture et tes emails TrafiCapture.
+  </div>
+
+  <!-- RULES NAV -->
+  <div class="rules-nav">
+    <button class="rule-btn active" onclick="goToRule(0)"><span class="num">1</span>La structure</button>
+    <button class="rule-btn" onclick="goToRule(1)"><span class="num">2</span>La voix</button>
+    <button class="rule-btn" onclick="goToRule(2)"><span class="num">3</span>La douleur</button>
+    <button class="rule-btn" onclick="goToRule(3)"><span class="num">4</span>Le CTA</button>
+  </div>
+
+  <!-- RULE CARDS -->
+  <div id="rules-container">
+
+    <!-- RÈGLE 1 -->
+    <div class="rule-card active" id="rule-0">
+      <div class="rule-header">
+        <div class="rule-number">Règle 01 / 04</div>
+        <div class="rule-title">Laisse l'IA structurer,<br>pas rédiger</div>
+        <div class="rule-desc">L'IA est excellente pour te donner un squelette — les grandes parties, l'ordre logique, les angles à couvrir. Mais dès qu'elle rédige les phrases finales, tu perds ta voix. Utilise-la comme un plan d'architecte, pas comme un maçon.</div>
+      </div>
+
+      <div class="toggle-wrapper">
+        <div class="toggle-label">Exemple — Intro d'une page de capture</div>
+        <div class="toggle-bar">
+          <button class="toggle-opt ia active" onclick="switchMode(0, 'ia')">⚠ Version IA</button>
+          <button class="toggle-opt humain" onclick="switchMode(0, 'humain')">✓ Version humaine</button>
+        </div>
+      </div>
+
+      <div class="content-box ia-mode" id="box-0">
+        <div class="mode-badge ia">⚠ Généré IA — non retravaillé</div>
+        <div class="content-ia visible" id="ia-0">
+          <p class="content-text bad">
+            "Bienvenue sur cette page dédiée à la <em>reconversion professionnelle</em>. Vous trouverez ici des <em>ressources précieuses</em> pour vous aider dans votre parcours. Notre <em>méthode éprouvée</em> vous permettra d'atteindre vos objectifs rapidement et efficacement. <em>Inscrivez-vous gratuitement</em> pour recevoir nos conseils."
+          </p>
+        </div>
+        <div class="content-humain" id="humain-0">
+          <p class="content-text">
+            "À 47 ans, elle a cliqué sur 'envoyer' ce matin-là. <em>Sa lettre de démission.</em> Pas de plan B. Juste une certitude : elle pouvait plus continuer comme ça. Si tu te reconnais dans cette phrase — continue de lire."
+          </p>
+        </div>
+      </div>
+
+      <div class="analysis bad" id="analysis-ia-0">
+        <strong>Pourquoi ça ne marche pas</strong>
+        <ul>
+          <li>Formulations génériques qu'on retrouve sur 10 000 autres pages</li>
+          <li>Aucune émotion, aucune tension, aucun personnage</li>
+          <li>"Ressources précieuses" et "méthode éprouvée" = signaux IA classiques</li>
+          <li>Google le reconnaît. Ton visiteur le ressent.</li>
+        </ul>
+      </div>
+
+      <div class="analysis good" id="analysis-humain-0" style="display:none;">
+        <strong>Pourquoi ça fonctionne</strong>
+        <ul>
+          <li>Une scène concrète — le visiteur se projette immédiatement</li>
+          <li>Une émotion réelle — la tension entre "rester" et "partir"</li>
+          <li>Un avatar précis — pas "tout le monde", une personne</li>
+          <li>L'IA peut t'avoir aidé à trouver l'angle — mais c'est toi qui as écrit ça</li>
+        </ul>
+      </div>
+
+      <div class="principe-box">
+        <div class="principe-icon">⚒</div>
+        <div class="principe-text">
+          <strong>La règle du forgeron</strong>
+          L'IA te donne le métal brut. C'est toi qui forges. Demande-lui : "Donne-moi 5 angles pour accrocher une personne en reconversion à 45 ans." Puis tu choisis, tu réécris, tu mets ta patte. Le plan vient d'elle. Les mots viennent de toi.
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prevRule()" disabled id="prev-btn-0">← Précédent</button>
+        <div class="progress">Règle <span>1</span> / 4</div>
+        <button class="nav-btn" onclick="nextRule()">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- RÈGLE 2 -->
+    <div class="rule-card" id="rule-1">
+      <div class="rule-header">
+        <div class="rule-number">Règle 02 / 04</div>
+        <div class="rule-title">Réinjecte toujours<br>ta voix de persona</div>
+        <div class="rule-desc">Ton persona a une façon de parler. Un vocabulaire. Un ton. Des expressions. L'IA ne le connaît pas — à moins que tu lui donnes. Avant de générer quoi que ce soit, donne-lui le profil complet de ton persona et dis-lui d'écrire "comme lui".</div>
+      </div>
+
+      <div class="toggle-wrapper">
+        <div class="toggle-label">Exemple — Email de bienvenue séquence</div>
+        <div class="toggle-bar">
+          <button class="toggle-opt ia active" onclick="switchMode(1, 'ia')">⚠ Version IA</button>
+          <button class="toggle-opt humain" onclick="switchMode(1, 'humain')">✓ Version humaine</button>
+        </div>
+      </div>
+
+      <div class="content-box ia-mode" id="box-1">
+        <div class="mode-badge ia">⚠ Généré IA — non retravaillé</div>
+        <div class="content-ia visible" id="ia-1">
+          <p class="content-text bad">
+            "Bonjour [Prénom],<br><br>Je suis <em>ravi(e) de vous accueillir</em> dans ma liste. Vous avez fait <em>un excellent choix</em>. Dans les prochains jours, je vais partager avec vous des <em>conseils précieux</em> pour vous aider à <em>atteindre vos objectifs</em>. Restez connecté(e) !<br><br>À très bientôt"
+          </p>
+        </div>
+        <div class="content-humain" id="humain-1">
+          <p class="content-text">
+            "Salut,<br><br>Je vais pas te faire le coup du 'bienvenue dans ma liste, t'as fait le bon choix'. <em>Tu sais pas encore si c'était le bon choix.</em><br><br>Ce que je sais, c'est que t'es là parce que t'en as marre de voir les mois passer sans que ça bouge. Alors on va pas perdre de temps.<br><br>Demain matin dans ta boîte : le premier truc concret."
+          </p>
+        </div>
+      </div>
+
+      <div class="analysis bad" id="analysis-ia-1">
+        <strong>Pourquoi ça ne marche pas</strong>
+        <ul>
+          <li>"Ravi(e)" avec la parenthèse — signe IA immédiat</li>
+          <li>Aucune personnalité, aucun ton distinctif</li>
+          <li>Promesses vagues : "conseils précieux", "atteindre vos objectifs"</li>
+          <li>Le lecteur supprime avant d'arriver à la fin</li>
+        </ul>
+      </div>
+
+      <div class="analysis good" id="analysis-humain-1" style="display:none;">
+        <strong>Pourquoi ça fonctionne</strong>
+        <ul>
+          <li>Ton direct, honnête — le persona a une vraie personnalité</li>
+          <li>Anticipe et désamorce le cliché — crée de la confiance</li>
+          <li>Une promesse concrète et datée : "demain matin"</li>
+          <li>L'IA aurait pu générer le squelette — mais ce ton, c'est toi</li>
+        </ul>
+      </div>
+
+      <div class="principe-box">
+        <div class="principe-icon">🗡</div>
+        <div class="principe-text">
+          <strong>Le prompt qui change tout</strong>
+          Commence toujours par : "Mon persona s'appelle [X], il parle de façon [directe/chaleureuse/cash/provocante], il utilise des expressions comme [Y], il évite les mots comme [Z]. Écris dans son style." L'IA suit les contraintes — c'est toi qui les définis.
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prevRule()">← Précédent</button>
+        <div class="progress">Règle <span>2</span> / 4</div>
+        <button class="nav-btn" onclick="nextRule()">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- RÈGLE 3 -->
+    <div class="rule-card" id="rule-2">
+      <div class="rule-header">
+        <div class="rule-number">Règle 03 / 04</div>
+        <div class="rule-title">La douleur doit être<br>chirurgicale, pas générique</div>
+        <div class="rule-desc">L'IA génère des douleurs génériques parce qu'elle essaie de toucher tout le monde. Mais en affiliation, tu cibles une personne précise. Plus ta douleur est spécifique, plus elle résonne. Et cette spécificité — seul toi (avec ton avatar bien défini) peux la lui donner.</div>
+      </div>
+
+      <div class="toggle-wrapper">
+        <div class="toggle-label">Exemple — Headline d'une page de capture</div>
+        <div class="toggle-bar">
+          <button class="toggle-opt ia active" onclick="switchMode(2, 'ia')">⚠ Version IA</button>
+          <button class="toggle-opt humain" onclick="switchMode(2, 'humain')">✓ Version humaine</button>
+        </div>
+      </div>
+
+      <div class="content-box ia-mode" id="box-2">
+        <div class="mode-badge ia">⚠ Généré IA — non retravaillé</div>
+        <div class="content-ia visible" id="ia-2">
+          <p class="content-text bad">
+            "<em>Vous souhaitez générer des revenus complémentaires</em> sur internet mais vous ne savez pas par où commencer ? Découvrez notre <em>système complet et clé en main</em> pour <em>atteindre la liberté financière</em> depuis chez vous, même sans expérience."
+          </p>
+        </div>
+        <div class="content-humain" id="humain-2">
+          <p class="content-text">
+            "T'as regardé ton relevé de compte ce mois-ci et t'as senti ce truc dans le ventre — <em>encore</em>. Pas la panique. Juste cette fatigue de compter. Si c'est ça, j'ai quelque chose pour toi."
+          </p>
+        </div>
+      </div>
+
+      <div class="analysis bad" id="analysis-ia-2">
+        <strong>Pourquoi ça ne marche pas</strong>
+        <ul>
+          <li>"Liberté financière", "clé en main" — usés jusqu'à la corde</li>
+          <li>S'adresse à tout le monde = ne touche personne</li>
+          <li>Aucun moment de vie, aucune scène reconnaissable</li>
+          <li>Le visiteur n'a pas l'impression qu'on lui parle à lui</li>
+        </ul>
+      </div>
+
+      <div class="analysis good" id="analysis-humain-2" style="display:none;">
+        <strong>Pourquoi ça fonctionne</strong>
+        <ul>
+          <li>Un moment précis et universel — "regarder son relevé"</li>
+          <li>Une émotion nommée — "ce truc dans le ventre"</li>
+          <li>Pas de promesse exagérée — juste "j'ai quelque chose pour toi"</li>
+          <li>Le lecteur se sent vu, pas prospecté</li>
+        </ul>
+      </div>
+
+      <div class="principe-box">
+        <div class="principe-icon">🔥</div>
+        <div class="principe-text">
+          <strong>La question à poser à l'IA</strong>
+          "Décris-moi 10 moments de vie concrets que vit une personne de 45 ans qui veut se reconvertir mais n'ose pas se lancer." Ensuite tu choisis le moment le plus fort, et tu l'écris toi-même en 2-3 phrases. L'IA t'a fourni la matière — la plume reste la tienne.
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prevRule()">← Précédent</button>
+        <div class="progress">Règle <span>3</span> / 4</div>
+        <button class="nav-btn" onclick="nextRule()">Suivant →</button>
+      </div>
+    </div>
+
+    <!-- RÈGLE 4 -->
+    <div class="rule-card" id="rule-3">
+      <div class="rule-header">
+        <div class="rule-number">Règle 04 / 04</div>
+        <div class="rule-title">Le CTA doit avoir<br>de l'intention, pas de l'injonction</div>
+        <div class="rule-desc">L'IA génère des CTA qui donnent des ordres. "Cliquez maintenant", "Inscrivez-vous", "Téléchargez gratuitement". Ça fonctionne moins bien qu'un CTA qui donne envie — qui crée une micro-projection vers ce qui attend le visiteur de l'autre côté.</div>
+      </div>
+
+      <div class="toggle-wrapper">
+        <div class="toggle-label">Exemple — Bouton + phrase CTA page de capture</div>
+        <div class="toggle-bar">
+          <button class="toggle-opt ia active" onclick="switchMode(3, 'ia')">⚠ Version IA</button>
+          <button class="toggle-opt humain" onclick="switchMode(3, 'humain')">✓ Version humaine</button>
+        </div>
+      </div>
+
+      <div class="content-box ia-mode" id="box-3">
+        <div class="mode-badge ia">⚠ Généré IA — non retravaillé</div>
+        <div class="content-ia visible" id="ia-3">
+          <p class="content-text bad">
+            "<em>Cliquez sur le bouton ci-dessous</em> pour accéder gratuitement à notre formation et commencer votre <em>voyage vers la liberté financière</em> dès aujourd'hui. <em>Ne manquez pas cette opportunité unique !</em><br><br>[ OUI, JE VEUX RÉUSSIR ]"
+          </p>
+        </div>
+        <div class="content-humain" id="humain-3">
+          <p class="content-text">
+            "Si t'es encore là, c'est que quelque chose a résonné. Laisse juste ton email — <em>je t'envoie la première étape.</em> Pas un bouquin de 80 pages. Une chose. Concrète. Pour cette semaine.<br><br>[ Je veux voir la première étape ]"
+          </p>
+        </div>
+      </div>
+
+      <div class="analysis bad" id="analysis-ia-3">
+        <strong>Pourquoi ça ne marche pas</strong>
+        <ul>
+          <li>"Ne manquez pas cette opportunité" — pression artificielle, le lecteur le sait</li>
+          <li>"Voyage vers la liberté financière" — trop large, trop vague, trop usé</li>
+          <li>"OUI JE VEUX RÉUSSIR" — condescendant, le visiteur se sent manipulé</li>
+          <li>Aucune promesse concrète sur ce qui attend de l'autre côté</li>
+        </ul>
+      </div>
+
+      <div class="analysis good" id="analysis-humain-3" style="display:none;">
+        <strong>Pourquoi ça fonctionne</strong>
+        <ul>
+          <li>Reconnaît que le visiteur a fait le chemin — crée de la réciprocité</li>
+          <li>Promet quelque chose de précis et réaliste : "une chose, concrète"</li>
+          <li>Le bouton parle en "je" — le visiteur s'approprie l'action</li>
+          <li>Pas de manipulation — juste une promesse honnête</li>
+        </ul>
+      </div>
+
+      <div class="principe-box">
+        <div class="principe-icon">⚡</div>
+        <div class="principe-text">
+          <strong>La règle des 3 questions</strong>
+          Avant de valider un CTA généré par l'IA, pose-toi : 1) Est-ce que ce bouton dit exactement ce qui se passe après le clic ? 2) Est-ce que mon persona dirait ça naturellement ? 3) Est-ce que ça donne envie ou est-ce que ça force ? Si une seule réponse est non — tu réécris.
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="nav-btn" onclick="prevRule()">← Précédent</button>
+        <div class="progress">Règle <span>4</span> / 4</div>
+        <button class="nav-btn" onclick="showFinal()">Voir le récap →</button>
+      </div>
+    </div>
+
+  </div><!-- end rules-container -->
+
+  <!-- FINAL SCREEN -->
+  <div class="final-screen" id="final-screen">
+    <div class="final-icon">⚔️</div>
+    <div class="final-title">Les 4 règles du guerrier</div>
+    <p class="final-text">L'IA travaille pour toi — pas à ta place. Ces 4 règles, appliquées sur chaque contenu que tu produis, font la différence entre un système qui convertit et un système qui dort.</p>
+
+    <div class="final-rules">
+      <div class="final-rule">
+        <div class="final-rule-num">1</div>
+        <div>Laisse l'IA <strong>structurer</strong> — toi tu rédiges les phrases finales</div>
+      </div>
+      <div class="final-rule">
+        <div class="final-rule-num">2</div>
+        <div>Donne-lui le profil complet de ton <strong>persona</strong> avant chaque génération</div>
+      </div>
+      <div class="final-rule">
+        <div class="final-rule-num">3</div>
+        <div>La <strong>douleur</strong> doit être un moment de vie précis — pas une généralité</div>
+      </div>
+      <div class="final-rule">
+        <div class="final-rule-num">4</div>
+        <div>Ton <strong>CTA</strong> donne envie — il ne donne pas d'ordres</div>
+      </div>
+    </div>
+
+    <button class="restart-btn" onclick="restart()">↺ Revoir les exemples</button>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>Nation Divergente</span> — Bonus Salon Divergent — La Team Divergente
+  </div>
+
+</div>
+
+<script>
+  let currentRule = 0;
+  const totalRules = 4;
+
+  // État des toggles par règle
+  const toggleState = { 0: 'ia', 1: 'ia', 2: 'ia', 3: 'ia' };
+
+  function goToRule(index) {
+    // Masquer tout
+    document.querySelectorAll('.rule-card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.rule-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('final-screen').classList.remove('active');
+    document.getElementById('rules-container').style.display = 'block';
+
+    currentRule = index;
+    document.getElementById(`rule-${index}`).classList.add('active');
+    document.querySelectorAll('.rule-btn')[index].classList.add('active');
+  }
+
+  function nextRule() {
+    if (currentRule < totalRules - 1) {
+      goToRule(currentRule + 1);
+    }
+  }
+
+  function prevRule() {
+    if (currentRule > 0) {
+      goToRule(currentRule - 1);
+    }
+  }
+
+  function showFinal() {
+    document.querySelectorAll('.rule-card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.rule-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('rules-container').style.display = 'none';
+    document.getElementById('final-screen').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function restart() {
+    document.getElementById('final-screen').classList.remove('active');
+    document.getElementById('rules-container').style.display = 'block';
+    goToRule(0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function switchMode(ruleIndex, mode) {
+    toggleState[ruleIndex] = mode;
+
+    const box = document.getElementById(`box-${ruleIndex}`);
+    const iaContent = document.getElementById(`ia-${ruleIndex}`);
+    const humainContent = document.getElementById(`humain-${ruleIndex}`);
+    const analysisIa = document.getElementById(`analysis-ia-${ruleIndex}`);
+    const analysisHumain = document.getElementById(`analysis-humain-${ruleIndex}`);
+
+    const btns = box.closest('.rule-card').querySelectorAll('.toggle-opt');
+
+    if (mode === 'ia') {
+      // Toggle buttons
+      btns[0].classList.add('active');
+      btns[1].classList.remove('active');
+      // Box style
+      box.classList.remove('humain-mode');
+      box.classList.add('ia-mode');
+      box.querySelector('.mode-badge').className = 'mode-badge ia';
+      box.querySelector('.mode-badge').textContent = '⚠ Généré IA — non retravaillé';
+      // Content
+      iaContent.classList.add('visible');
+      humainContent.classList.remove('visible');
+      // Analysis
+      if (analysisIa) { analysisIa.style.display = 'block'; analysisIa.classList.add('visible'); }
+      if (analysisHumain) { analysisHumain.style.display = 'none'; }
+    } else {
+      // Toggle buttons
+      btns[0].classList.remove('active');
+      btns[1].classList.add('active');
+      // Box style
+      box.classList.remove('ia-mode');
+      box.classList.add('humain-mode');
+      box.querySelector('.mode-badge').className = 'mode-badge humain';
+      box.querySelector('.mode-badge').textContent = '✓ Avec ta voix — retravaillé';
+      // Content
+      iaContent.classList.remove('visible');
+      humainContent.classList.add('visible');
+      // Analysis
+      if (analysisIa) { analysisIa.style.display = 'none'; }
+      if (analysisHumain) { analysisHumain.style.display = 'block'; analysisHumain.classList.add('visible'); }
+    }
+  }
+
+  // Init analysis visibility
+  document.querySelectorAll('[id^="analysis-ia-"]').forEach(el => {
+    el.classList.add('visible');
+  });
+</script>
+
+</body>
+</html>
