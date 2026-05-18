@@ -571,6 +571,144 @@
 
   .footer span { color: var(--gold-dark); }
 
+
+
+  /* URGENCY BANNER */
+  .urgency-banner {
+    background: linear-gradient(135deg, rgba(192,57,43,0.15), rgba(232,101,26,0.1));
+    border: 1px solid rgba(192,57,43,0.4);
+    border-left: 3px solid var(--red);
+    padding: 16px 24px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .urgency-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .urgency-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: rgba(240,237,224,0.85);
+  }
+
+  .urgency-text strong {
+    color: #E74C3C;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  .urgency-countdown {
+    margin-left: auto;
+    flex-shrink: 0;
+    text-align: center;
+    border: 1px solid rgba(192,57,43,0.4);
+    padding: 10px 18px;
+    background: rgba(192,57,43,0.08);
+  }
+
+  .urgency-days {
+    font-family: 'Cinzel', serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: #E74C3C;
+    line-height: 1;
+    display: block;
+  }
+
+  .urgency-days-label {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--grey);
+    text-transform: uppercase;
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* PROMPT BOX */
+  .prompt-box {
+    margin-top: 20px;
+    border: 1px solid rgba(212,175,55,0.25);
+    background: rgba(0,0,0,0.4);
+    position: relative;
+  }
+
+  .prompt-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(212,175,55,0.15);
+    background: rgba(212,175,55,0.05);
+  }
+
+  .prompt-box-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+  }
+
+  .copy-btn {
+    background: transparent;
+    border: 1px solid rgba(212,175,55,0.3);
+    color: var(--gold);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .copy-btn:hover {
+    background: rgba(212,175,55,0.1);
+    border-color: var(--gold);
+  }
+
+  .copy-btn.copied {
+    color: #5cb85c;
+    border-color: #5cb85c;
+  }
+
+  .prompt-text {
+    padding: 20px 24px;
+    font-size: 18px;
+    line-height: 1.75;
+    color: rgba(240,237,224,0.75);
+    font-family: 'Rajdhani', sans-serif;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* FINAL PROMPTS */
+  .final-prompts-title {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 50px 0 24px;
+    text-align: center;
+  }
+
+  .final-prompts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 700px;
+    margin: 0 auto 40px;
+    text-align: left;
+  }
+
   @media (max-width: 600px) {
     .container { padding: 24px 16px 60px; }
     .rules-nav { gap: 6px; }
@@ -600,6 +738,20 @@
   <div class="intro-box">
     L'IA est un outil. <strong>Pas un remplaçant.</strong> Le problème, c'est pas de l'utiliser — c'est de laisser l'IA parler à ta place. Résultat : un contenu qui ressemble à tous les autres, sans voix, sans intention, sans âme. Google le détecte. Tes prospects le sentent. Et toi tu te demandes pourquoi ça convertit pas.<br><br>
     Ces 4 règles te montrent exactement <strong>où la ligne se situe</strong> — avec des exemples concrets sur tes pages de capture et tes emails TrafiCapture.
+  </div>
+
+
+  <!-- URGENCY BANNER -->
+  <div class="urgency-banner">
+    <div class="urgency-icon">⏳</div>
+    <div class="urgency-text">
+      <strong>Bonus à durée limitée.</strong><br>
+      Ce contenu disparaît au prochain Salon Divergent. Disponible jusqu'au <strong>20 juin 2026</strong> uniquement — après ça, il n'est plus accessible.
+    </div>
+    <div class="urgency-countdown">
+      <span class="urgency-days" id="days-left">30</span>
+      <span class="urgency-days-label">jours restants</span>
+    </div>
   </div>
 
   <!-- RULES NAV -->
@@ -671,6 +823,15 @@
         </div>
       </div>
 
+
+      <div class="prompt-box">
+        <div class="prompt-box-header">
+          <span class="prompt-box-label">⚡ Prompt à copier dans ChatGPT</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'p0')">Copier</button>
+        </div>
+        <div class="prompt-text" id="p0">Génère-moi le plan en 5 parties d'une page de capture sur [thématique]. Pour chaque partie, donne-moi juste le titre et 2-3 points à couvrir. Ne rédige aucune phrase complète — je veux le squelette, pas le texte. Je rédigerai moi-même à partir de ce plan.</div>
+      </div>
+
       <div class="nav-row">
         <button class="nav-btn" onclick="prevRule()" disabled id="prev-btn-0">← Précédent</button>
         <div class="progress">Règle <span>1</span> / 4</div>
@@ -734,6 +895,15 @@
           <strong>Le prompt qui change tout</strong>
           Commence toujours par : "Mon persona s'appelle [X], il parle de façon [directe/chaleureuse/cash/provocante], il utilise des expressions comme [Y], il évite les mots comme [Z]. Écris dans son style." L'IA suit les contraintes — c'est toi qui les définis.
         </div>
+      </div>
+
+
+      <div class="prompt-box">
+        <div class="prompt-box-header">
+          <span class="prompt-box-label">⚡ Prompt à copier dans ChatGPT</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'p1')">Copier</button>
+        </div>
+        <div class="prompt-text" id="p1">Mon persona s'appelle [prénom], il a [âge] ans, il cherche à [objectif]. Il parle de façon [directe / cash / chaleureuse]. Il utilise des expressions comme [exemple]. Il évite absolument les mots : "liberté financière", "clé en main", "conseils précieux", "ravi(e)". Écris un email de bienvenue de 5 lignes dans son style exact. Pas de formule polie en ouverture.</div>
       </div>
 
       <div class="nav-row">
@@ -801,6 +971,15 @@
         </div>
       </div>
 
+
+      <div class="prompt-box">
+        <div class="prompt-box-header">
+          <span class="prompt-box-label">⚡ Prompt à copier dans ChatGPT</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'p2')">Copier</button>
+        </div>
+        <div class="prompt-text" id="p2">Décris-moi 10 moments de vie très concrets et précis que vit une personne de [âge] ans qui [situation]. Des scènes du quotidien, pas des généralités. Je veux des situations où elle ressent physiquement le problème — pas "elle veut réussir", mais "elle fait X et ressent Y dans ce moment précis".</div>
+      </div>
+
       <div class="nav-row">
         <button class="nav-btn" onclick="prevRule()">← Précédent</button>
         <div class="progress">Règle <span>3</span> / 4</div>
@@ -866,6 +1045,15 @@
         </div>
       </div>
 
+
+      <div class="prompt-box">
+        <div class="prompt-box-header">
+          <span class="prompt-box-label">⚡ Prompt à copier dans ChatGPT</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'p3')">Copier</button>
+        </div>
+        <div class="prompt-text" id="p3">Génère 5 versions de CTA pour une page de capture sur [thématique]. Règles absolues : 1) écrit à la 1ère personne du point de vue du visiteur, 2) dit précisément ce qui se passe après le clic, 3) donne envie sans forcer. Interdits : "Je veux réussir", "Je passe à l'action", "Je veux la liberté", "Oui je veux". Sois concret et honnête.</div>
+      </div>
+
       <div class="nav-row">
         <button class="nav-btn" onclick="prevRule()">← Précédent</button>
         <div class="progress">Règle <span>4</span> / 4</div>
@@ -897,6 +1085,39 @@
       <div class="final-rule">
         <div class="final-rule-num">4</div>
         <div>Ton <strong>CTA</strong> donne envie — il ne donne pas d'ordres</div>
+      </div>
+    </div>
+
+
+    <div class="final-prompts-title">⚡ Les 4 prompts — prêts à l'emploi</div>
+    <div class="final-prompts">
+      <div class="prompt-box">
+        <div class="prompt-box-header">
+          <span class="prompt-box-label">Règle 1 — Structurer</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'fp0')">Copier</button>
+        </div>
+        <div class="prompt-text" id="fp0">Génère-moi le plan en 5 parties d'une page de capture sur [thématique]. Pour chaque partie, donne-moi juste le titre et 2-3 points à couvrir. Ne rédige aucune phrase complète — je veux le squelette, pas le texte. Je rédigerai moi-même à partir de ce plan.</div>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-box-header">
+          <span class="prompt-box-label">Règle 2 — Voix du persona</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'fp1')">Copier</button>
+        </div>
+        <div class="prompt-text" id="fp1">Mon persona s'appelle [prénom], il a [âge] ans, il cherche à [objectif]. Il parle de façon [directe / cash / chaleureuse]. Il utilise des expressions comme [exemple]. Il évite absolument les mots : "liberté financière", "clé en main", "conseils précieux", "ravi(e)". Écris un email de bienvenue de 5 lignes dans son style exact. Pas de formule polie en ouverture.</div>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-box-header">
+          <span class="prompt-box-label">Règle 3 — La douleur</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'fp2')">Copier</button>
+        </div>
+        <div class="prompt-text" id="fp2">Décris-moi 10 moments de vie très concrets et précis que vit une personne de [âge] ans qui [situation]. Des scènes du quotidien, pas des généralités. Je veux des situations où elle ressent physiquement le problème — pas "elle veut réussir", mais "elle fait X et ressent Y dans ce moment précis".</div>
+      </div>
+      <div class="prompt-box">
+        <div class="prompt-box-header">
+          <span class="prompt-box-label">Règle 4 — Le CTA</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'fp3')">Copier</button>
+        </div>
+        <div class="prompt-text" id="fp3">Génère 5 versions de CTA pour une page de capture sur [thématique]. Règles absolues : 1) écrit à la 1ère personne du point de vue du visiteur, 2) dit précisément ce qui se passe après le clic, 3) donne envie sans forcer. Interdits : "Je veux réussir", "Je passe à l'action", "Je veux la liberté", "Oui je veux". Sois concret et honnête.</div>
       </div>
     </div>
 
@@ -998,6 +1219,48 @@
       if (analysisIa) { analysisIa.style.display = 'none'; }
       if (analysisHumain) { analysisHumain.style.display = 'block'; analysisHumain.classList.add('visible'); }
     }
+  }
+
+
+
+  // Countdown — expire le 20 juin 2026
+  (function() {
+    const expiry = new Date('2026-06-20T23:59:59');
+    const now = new Date();
+    const diff = expiry - now;
+    const remaining = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+    const el = document.getElementById('days-left');
+    if (el) el.textContent = remaining;
+    if (remaining === 0 && el) {
+      el.style.color = '#888';
+      el.closest('.urgency-countdown').querySelector('.urgency-days-label').textContent = 'expiré';
+    }
+  })();
+
+  function copyPrompt(btn, id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copié !';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copier';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = '✓ Copié !';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copier';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
   }
 
   // Init analysis visibility
